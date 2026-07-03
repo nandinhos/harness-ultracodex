@@ -48,6 +48,16 @@ must_block=(
   "DROP DATABASE app;"
   "DELETE FROM orders;"
   "TRUNCATE TABLE sessions;"
+  "php artisan migrate:fresh"
+  "php artisan migrate:refresh --seed"
+  "php artisan db:wipe"
+  "rails db:reset"
+  "rake db:drop"
+  "prisma migrate reset"
+  "npx prisma db push --force-reset"
+  "sequelize db:drop"
+  "python manage.py flush"
+  "dropdb producao"
 )
 
 must_allow=(
@@ -81,6 +91,39 @@ for cmd in "${must_allow[@]}"; do
     fail=1
   fi
 done
+
+# --- Regras B/C de banco: dupla confirmacao (env controlado) ---
+unset_db=(-u APP_ENV -u DB_CONNECTION -u NODE_ENV -u RAILS_ENV -u DB_DATABASE
+  -u HARNESS_TEST_DB -u HARNESS_DB_TARGET -u HARNESS_DB_CONFIRM -u HARNESS_DB_CONFIRM_PHRASE)
+frase="CONFIRMO-OPERACAO-NO-BANCO-ORIGINAL"
+
+# migrate no ORIGINAL sem confirmacao -> deve BLOQUEAR
+if env "${unset_db[@]}" bash "$guard" "php artisan migrate" >/dev/null 2>&1; then
+  echo "FALHA: migrate no original sem confirmacao deveria bloquear"; fail=1
+fi
+# migrate em TESTE via APP_ENV -> deve PERMITIR
+if ! env "${unset_db[@]}" APP_ENV=testing bash "$guard" "php artisan migrate" >/dev/null 2>&1; then
+  echo "FALHA: migrate em ambiente de teste deveria permitir"; fail=1
+fi
+# migrate com DUPLA CONFIRMACAO -> deve PERMITIR
+if ! env "${unset_db[@]}" HARNESS_DB_TARGET=original HARNESS_DB_CONFIRM="$frase" \
+    bash "$guard" "php artisan migrate" >/dev/null 2>&1; then
+  echo "FALHA: migrate com dupla confirmacao deveria permitir"; fail=1
+fi
+# apenas UM token (confirmacao incompleta) -> deve BLOQUEAR
+if env "${unset_db[@]}" HARNESS_DB_TARGET=original bash "$guard" "php artisan migrate" >/dev/null 2>&1; then
+  echo "FALHA: confirmacao incompleta (so 1 token) deveria bloquear"; fail=1
+fi
+# RESET e absoluto: BLOQUEIA mesmo com dupla confirmacao
+if env "${unset_db[@]}" HARNESS_DB_TARGET=original HARNESS_DB_CONFIRM="$frase" \
+    bash "$guard" "php artisan migrate:fresh" >/dev/null 2>&1; then
+  echo "FALHA: reset deveria bloquear mesmo com dupla confirmacao"; fail=1
+fi
+# allowlist HARNESS_TEST_DB -> deve PERMITIR
+if ! env "${unset_db[@]}" HARNESS_TEST_DB="meu_sandbox" \
+    bash "$guard" "php artisan migrate --database=meu_sandbox" >/dev/null 2>&1; then
+  echo "FALHA: allowlist HARNESS_TEST_DB deveria permitir"; fail=1
+fi
 
 if [ "$fail" -ne 0 ]; then
   echo "guard=falhou"

@@ -76,8 +76,40 @@ if [[ "$n" =~ (^|[\ /])(chmod|chown)\  ]] && [[ "$n" =~ $re_recursive ]]; then
   block "perm-recursivo"
 fi
 
-# Banco de dados.
-[[ "$n" =~ drop\ (table|database) ]] && block "sql-drop"
+# --- Seguranca de banco de dados (ADR 0005) ---
+
+# Regra A: RESET de banco = bloqueio absoluto (nunca liberado, nem com confirmacao).
+[[ "$n" =~ migrate:fresh|migrate:reset|migrate:refresh|db:wipe|db:reset|db:drop ]] && block "db-reset"
+[[ "$n" =~ prisma\ migrate\ reset|--force-reset|sequelize\ .*db:drop ]] && block "db-reset"
+[[ "$n" =~ manage\.py\ (flush|reset_db) ]] && block "db-reset"
+[[ "$n" =~ (^|[\ /])dropdb|dropdatabase\( ]] && block "db-reset"
+
+# Regra B/C: operacao que MUTA um banco NAO-teste exige dupla confirmacao explicita.
+db_mut='artisan\ .*migrate|artisan\ .*db:seed|(rails|rake)\ .*db:(migrate|seed)|prisma\ (migrate|db\ push)|sequelize\ .*db:(migrate|seed)|manage\.py\ (migrate|loaddata)|flyway\ .*migrate|liquibase\ .*update|(psql|mysql|mongosh)\ .*(insert|update|delete|alter|drop|create|truncate)'
+if [[ "$n" =~ $db_mut ]]; then
+  alvo_teste=0
+  # Marcador de ambiente/nome (test/testing em env ou no proprio comando).
+  case " ${APP_ENV:-} ${DB_CONNECTION:-} ${NODE_ENV:-} ${RAILS_ENV:-} ${DB_DATABASE:-} " in
+    *test*) alvo_teste=1 ;;
+  esac
+  [[ "$n" =~ test ]] && alvo_teste=1
+  # Allowlist explicita HARNESS_TEST_DB (nomes separados por espaco).
+  if [ -n "${HARNESS_TEST_DB:-}" ]; then
+    for _tdb in ${HARNESS_TEST_DB}; do
+      _tdb_low="$(printf '%s' "$_tdb" | tr '[:upper:]' '[:lower:]')"
+      [ -n "$_tdb_low" ] && [[ "$n" == *"$_tdb_low"* ]] && alvo_teste=1
+    done
+  fi
+  if [ "$alvo_teste" -ne 1 ]; then
+    _esperado="${HARNESS_DB_CONFIRM_PHRASE:-CONFIRMO-OPERACAO-NO-BANCO-ORIGINAL}"
+    if ! { [ "${HARNESS_DB_TARGET:-}" = "original" ] && [ "${HARNESS_DB_CONFIRM:-}" = "$_esperado" ]; }; then
+      block "db-original-sem-dupla-confirmacao"
+    fi
+  fi
+fi
+
+# SQL destrutivo cru.
+[[ "$n" =~ drop\ (table|database|schema) ]] && block "sql-drop"
 [[ "$n" =~ delete\ from ]] && block "sql-delete"
 [[ "$n" =~ (^|[\ /])truncate ]] && block "truncate"
 
