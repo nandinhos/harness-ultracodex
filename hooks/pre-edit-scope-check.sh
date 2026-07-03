@@ -1,16 +1,19 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-scope="${1:-}"
-file="${2:-}"
+file="${1:-}"
 
-if [ -z "$scope" ] || [ -z "$file" ]; then
-  echo "Uso: hooks/pre-edit-scope-check.sh '<escopo>' '<arquivo>'"
+if [ -z "$file" ]; then
+  echo "Uso: hooks/pre-edit-scope-check.sh '<arquivo>'"
   exit 2
 fi
 
-case "$file" in
-  docs/*|profiles/*|skills/*|hooks/*|scripts/*|evals/*|AGENTS.md|README.md)
+# Trata caminho absoluto como repo-relativo removendo o prefixo do project root.
+project_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+rel="${file#"$project_root"/}"
+
+case "$rel" in
+  docs/*|profiles/*|skills/*|hooks/*|scripts/*|evals/*|.github/*|AGENTS.md|README.md|SECURITY.md|.gitignore)
     echo "escopo=permitido"
     ;;
   *)
@@ -19,4 +22,3 @@ case "$file" in
     exit 1
     ;;
 esac
-
