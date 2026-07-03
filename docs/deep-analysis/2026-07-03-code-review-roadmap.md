@@ -23,7 +23,7 @@ robustez/CI e coerencia documental.
 
 1. Hooks de seguranca decorativos — nao copiados ao runtime nem invocados. **Tratado na Fase 1.**
 2. `trust_level = "trusted"` sem substituto operacional. **Mitigado na Fase 1 (instrucao do guard); confirmacao no CLI pendente.**
-3. Runtime "estendido" byte-identico ao limpo (context7 nunca habilitado; verify-runtime aprova o arquivo errado). **Fase 3.**
+3. Runtime "estendido": o review diagnosticou "context7 nunca habilitado / verify-runtime aprova arquivo inerte". **Parcialmente refutado na Fase 3** — o Codex carrega o perfil via `-p` (layer de `<name>.config.toml`), entao o arquivo nao era inerte. Porem `codex mcp list`/`codex doctor` liam so a config base e nao mostravam context7 (observabilidade zero). Corrigido: context7 movido para a config base + verify-runtime comportamental. **Resolvido na Fase 3.**
 4. `destructive-command-guard.sh` trivialmente contornavel. **Corrigido na Fase 1.**
 5. Guard falha aberto em `git push --force`/`-f`. **Corrigido na Fase 1.**
 6. Evals nao avaliam comportamento (falso verde). **Fase 2.**
@@ -53,12 +53,18 @@ Evidencia: `bash scripts/test-destructive-guard.sh` e `bash scripts/test-harness
 - [ ] Reescrever `score-scenario.sh` para consumir a "Evidencia minima" especifica de cada cenario e implementar a rubrica de 7 criterios, ou remove-lo e marcar a rubrica como manual.
 - [ ] Alinhar `docs/cenarios/modelo.md` x cenarios x linter (headings "Nome"/"Rubrica").
 
-## Fase 3 — Corrigir a corretude do build de runtime
+## Fase 3 — Corretude e observabilidade do build de runtime — CONCLUIDA
 
-- [ ] Fazer os build scripts derivarem/concatenarem o `config.toml` do perfil no `config.toml` gerado (fonte unica), emitindo `[mcp_servers.context7]` e `[profiles.*]` no arquivo que o Codex carrega.
-- [ ] Mudar `verify-runtime.sh` para checar apenas `"$runtime/config.toml"`.
-- [ ] Single-source do model id (`HARNESS_MODEL`) usado por build e `delegate.sh`.
-- [ ] Alinhar a linguagem de capacidade em ADR 0002 / README / `docs/11` (context7 declarado vs Playwright/delegacao como scripts que consomem binarios do host).
+Descoberta empirica (codex-cli 0.142.5): `-p <name>` faz layer de `$CODEX_HOME/<name>.config.toml` sobre a config base, mas `codex mcp list`/`codex doctor` leem so a base. Logo o extended tinha context7 apenas no arquivo layered — invisivel a qualquer diagnostico. A correcao poe context7 na config base (funciona sob as duas leituras do mecanismo).
+
+- [x] Build scripts derivam o `config.toml` base do `config.toml` do perfil (fonte unica de model/effort/MCP) e anexam `[projects.*]`. context7 passa a viver na config base do extended.
+- [x] `verify-runtime.sh` comportamental: pergunta ao `codex mcp list` se context7 esta visivel (fallback estrutural na config base quando `codex` ausente). Teste negativo: extended verificado como `--expect-core` falha.
+- [x] Model single-sourced do `config.toml` do perfil (o heredoc que hardcodava `gpt-5.5` foi removido).
+- [x] `docs/11` alinhado (context7 = MCP declarado no runtime; Playwright/`hermes`/`agy`/`codex` = CLIs do host via `command -v`).
+
+Acceptance (verificado): `CODEX_HOME=extended codex mcp list` mostra context7 e `doctor` reporta `MCP servers 1`; `CODEX_HOME=clean` mostra 0.
+
+Aberto (mantenedor, nao-bloqueante): confirmar num teste de sessao real (`codex -p nandodev-ultracode-extended`) que o layering tambem carrega context7. A config base ja garante isso independente da resposta.
 
 ## Fase 4 — Robustez, portabilidade e CI
 
