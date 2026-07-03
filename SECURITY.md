@@ -37,18 +37,18 @@ projeto nao-confiavel tem esses recursos filtrados. Portanto `trusted` e
 pre-requisito para qualquer guardrail nativo baseado em hook — nao um afrouxamento
 de seguranca, como o review inicial supos.
 
-Separado e nao definido pelo harness: `trust_level` nao configura por si
-`approval_policy` nem `sandbox_mode` (sao chaves independentes). O harness nao define
-nenhuma das duas, entao valem os defaults do Codex. Observado empiricamente
-(`codex exec` neste runtime): `approval: never` e `sandbox: workspace-write` limitado
-a `[workdir, /tmp, $TMPDIR]`. Ou seja, o modo exec nao pede aprovacao, mas confina a
-escrita ao workspace + tmp (nao ao disco inteiro); o modo interativo pode diferir.
-Para uma postura explicita, defina `approval_policy` e `sandbox_mode` no `config.toml`
-do perfil (item de hardening).
+`approval_policy` e `sandbox_mode` sao chaves independentes de `trust_level`. O
+harness agora as define explicitamente (hardening): `approval_policy = "on-request"`
+em ambos os perfis; `sandbox_mode = "read-only"` no core limpo e `"workspace-write"`
+no perfil pessoal. Em `codex exec` (nao-interativo) a aprovacao e forcada a `never`
+(nao ha como perguntar), mas o `sandbox_mode` vale — confirmado: o core roda em
+`read-only`. Em modo interativo, `on-request` pede aprovacao ao escalar.
 
-Enquanto nao houver hook nativo amarrado (ver `docs/adr/0003-hooks-operacionais.md`
-e a proposta de ADR 0004), o guard de comando destrutivo e aplicado apenas por
-instrucao no `AGENTS.md` — cumprimento voluntario do agente, nao enforcement do Codex.
+O guard de comando destrutivo agora tem **enforcement nativo** (hook `PreToolUse`,
+ver `docs/adr/0004-guard-hook-nativo.md`), alem da camada advisory do `AGENTS.md`. O
+hook exige trust (aprovacao unica interativa que persiste, ou
+`--dangerously-bypass-hook-trust` em automacao); enquanto nao confiado, vale a camada
+advisory.
 
 O runtime contem um symlink `auth.json` para a credencial do Codex do host. A via
 git esta protegida (`.runtime/` e `auth.json` sao ignorados), mas NAO empacote o

@@ -96,12 +96,18 @@ Aberto (mantenedor, nao-bloqueante): confirmar num teste de sessao real (`codex 
 - [x] **context7 em sessao (`-p`):** ja resolvido pela correcao de config base da Fase 3 (`codex mcp list`/`doctor` provam o carregamento). Um teste de sessao `-p` ao vivo so re-confirmaria — baixo valor marginal.
 - [x] **Runner comportamental ponta-a-ponta provado:** `delegate.sh` -> `codex exec` (gpt-5.4-mini) -> resposta real -> `score-scenario` = 4 (exit 0). A cadeia que o runner compoe esta verificada.
 
-## Oportunidade nova — ADR 0004 (proposta): enforcement nativo do guard
+## Camadas novas — ADR 0004/0005/0006 (EXECUTADO)
 
-O gatilho de extracao do ADR 0003 disparou: o Codex 0.142.5 tem hooks nativos
-(`[[hooks.PreToolUse]]`, entrada stdin JSON, decisao `deny` no stdout; trust por hash).
-Isso permite migrar o `destructive-command-guard` de advisory (instrucao no `AGENTS.md`)
-para **enforcement real**. Requer: adaptador stdin->guard->JSON, wiring no `config.toml`
-gerado, confirmar o `matcher` do shell tool e a semantica de hook-trust em automacao, e
-**prova ao vivo de um comando negado**. Fica como proposta de ADR 0004 (custo de token
-e mudanca arquitetural) pendente de decisao do mantenedor.
+- **ADR 0004 — enforcement nativo:** `destructive-command-guard` amarrado como hook
+  `PreToolUse` do Codex (adaptador `codex-pretooluse-guard.sh`, matcher `^Bash$`, deny
+  JSON). **Provado ao vivo**: `codex exec` teve um `rm -rf` BLOQUEADO pelo runtime
+  (`Command blocked by PreToolUse hook`). Trust do hook exige aprovacao unica
+  (interativa, persiste) ou `--dangerously-bypass-hook-trust` em CI; a camada advisory
+  do `AGENTS.md` permanece como defesa em profundidade.
+- **ADR 0005 — politica de banco:** reset bloqueado; banco de teste obrigatorio; banco
+  original so com dupla confirmacao (`HARNESS_DB_TARGET`+`HARNESS_DB_CONFIRM`, deteccao
+  por env/nome + `HARNESS_TEST_DB`). Coberto por `test-destructive-guard.sh`.
+- **ADR 0006 — judge delegado:** `scripts/judge.sh` (hermes+MiniMax, `HARNESS_JUDGE_MODEL`
+  configuravel) para tarefas de alto esforco — rubrica 7-criterios + contraparte. Skill `judge`.
+- **Hardening:** `approval_policy=on-request`; sandbox `read-only` (core) / `workspace-write` (pessoal).
+- **jq** requerido (adaptador + judge). Descartados: #6 (model single-source), #7 (sweep).

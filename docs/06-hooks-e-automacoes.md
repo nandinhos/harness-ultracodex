@@ -7,20 +7,27 @@ Hooks servem para alertar ou bloquear antes de erros recorrentes.
 | `pre-action-risk-check.sh` | Classificar risco antes de agir; escala para alto quando o guard bloquearia. |
 | `pre-edit-scope-check.sh` | Alertar sobre edicoes fora do escopo do harness. |
 | `pre-finish-evidence-check.sh` | Impedir conclusao sem evidencia declarada num relatorio. |
-| `destructive-command-guard.sh` | Bloquear comandos destrutivos sem confirmacao. |
+| `destructive-command-guard.sh` | Bloquear comandos destrutivos (incl. banco: reset, e banco original sem dupla confirmacao). |
+| `codex-pretooluse-guard.sh` | Adaptador PreToolUse: aplica o guard como enforcement nativo do Codex. |
 
-## Como os hooks sao aplicados
+## Como os hooks sao aplicados (duas camadas)
 
-Os hooks sao copiados para o runtime pelos build scripts (`build-clean-runtime.sh`
-e `build-personal-runtime.sh`) e `verify-runtime.sh` exige sua presenca. Eles nao
-sao enforcement de kernel: os `AGENTS.md` carregados instruem o agente a rodar
-`hooks/destructive-command-guard.sh '<comando>'` antes de qualquer comando
-destrutivo e a honrar `bloqueado=sim` parando para confirmacao e rollback.
+1. **Advisory (sempre ativa).** Os `AGENTS.md` carregados instruem o agente a rodar
+   `hooks/destructive-command-guard.sh '<comando>'` antes de comandos destrutivos e a
+   honrar `bloqueado=sim`. Cumprimento voluntario do agente.
+2. **Enforcement nativo (quando o hook e confiado).** O `config.toml` gerado registra
+   `[[hooks.PreToolUse]]` (matcher `^Bash$`) apontando para
+   `hooks/codex-pretooluse-guard.sh` (adaptador copiado no runtime). O Codex chama o
+   adaptador antes de cada comando shell; se destrutivo, ele retorna `deny` e o Codex
+   BLOQUEIA o comando. Ver `adr/0004-guard-hook-nativo.md`.
 
-Como o agente e lancado com `-C "$PWD"` na raiz do projeto, o guard efetivamente
-executado e o `hooks/` do proprio repositorio. A copia em `$runtime/hooks/` garante
-parity e self-containment do runtime (e permite a `verify-runtime.sh` confirmar que
-o build esta completo); ela nao e, por si so, o caminho de enforcement.
+Trust: o hook chega untrusted num runtime fresco e e pulado ate ser confiado
+(aprovacao interativa unica, que persiste; ou `--dangerously-bypass-hook-trust` em
+automacao). Enquanto nao confiado, vale a camada advisory. `verify-runtime.sh`
+confirma o hook wired, nao o trust (estado de runtime).
+
+O guard tambem cobre a politica de banco (reset bloqueado; banco de teste
+obrigatorio; original so com dupla confirmacao) — ver `adr/0005-politica-de-banco.md`.
 
 O guard normaliza whitespace e detecta destrutividade por familia (rm recursivo,
 `git reset --hard`, `git clean -f`, `git push --force`/`-f`, `dd`, `mkfs`,

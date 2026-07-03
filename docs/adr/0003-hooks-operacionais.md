@@ -1,6 +1,6 @@
 # ADR 0003 - Tornar os hooks de seguranca operacionais
 
-Status: aceito
+Status: aceito (estendido por ADR 0004 — enforcement nativo; a camada advisory permanece como defesa em profundidade)
 
 Data: 2026-07-03
 

@@ -21,6 +21,7 @@ Executar o Harness LF sem plugins globais, MCPs globais ou skills externas. Use 
 
 - Antes de executar qualquer comando irreversivel ou destrutivo (remocao recursiva, `git reset --hard`, `git clean -f`, `git push --force`, `dd`, `mkfs`, `drop`/`delete from`/`truncate`, `chmod`/`chown` recursivo), rode `hooks/destructive-command-guard.sh '<comando>'`.
 - Se a saida for `bloqueado=sim`, pare: exija confirmacao explicita do usuario e um plano de rollback antes de prosseguir.
+- Banco de dados: reset (`migrate:fresh`/`reset`, `db:wipe`, `dropdb`, `DROP DATABASE`) e sempre proibido. Operacao no banco original exige "sim" humano explicito e os dois tokens `HARNESS_DB_TARGET=original` e `HARNESS_DB_CONFIRM`; nunca autoconfirme.
 - Trate o guard como piso, nao teto: comandos perigosos fora da lista tambem exigem confirmacao.
 
 ## Limites
