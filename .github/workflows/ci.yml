@@ -17,7 +17,7 @@ jobs:
         run: bash scripts/check-tooling.sh
 
       - name: shellcheck
-        run: shellcheck hooks/*.sh scripts/*.sh
+        run: shellcheck hooks/*.sh scripts/*.sh scripts/lib/*.sh
 
       - name: Contrato do harness
         run: bash scripts/test-harness-contract.sh

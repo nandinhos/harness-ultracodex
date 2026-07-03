@@ -21,6 +21,8 @@ required_files=(
   "scripts/visual-check.sh"
   "scripts/test-destructive-guard.sh"
   "scripts/run-behavioral-scenarios.sh"
+  "scripts/lib/build-runtime.sh"
+  "scripts/lib/evidence-taxonomy.sh"
   "hooks/destructive-command-guard.sh"
   "evals/scenarios/005-pane-debugging.md"
   "evals/scenarios/006-docs-oficiais-context7.md"
@@ -65,6 +67,11 @@ for skill in \
 do
   rg -q '^name: [a-z0-9-]+$' "$skill"
   rg -q '^description: Use when ' "$skill"
+done
+
+for lib in scripts/lib/*.sh; do
+  [ -f "$lib" ] || continue
+  bash -n "$lib"
 done
 
 rg -q 'context7' docs/11-ferramentas-opcionais.md

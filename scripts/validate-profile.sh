@@ -51,7 +51,7 @@ for skill in skills/*/SKILL.md; do
   fi
 done
 
-for hook in hooks/*.sh scripts/*.sh; do
+for hook in hooks/*.sh scripts/*.sh scripts/lib/*.sh; do
   [ -f "$hook" ] || continue
   bash -n "$hook"
 done
