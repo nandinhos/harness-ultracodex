@@ -2,6 +2,8 @@
 set -euo pipefail
 
 expected=(
+  "docs/README.md"
+  "docs/STATUS.md"
   "docs/00-visao.md"
   "docs/01-principios-operacionais.md"
   "docs/02-camadas-de-abstracao.md"
@@ -14,6 +16,7 @@ expected=(
   "docs/09-manutencao-versionamento.md"
   "docs/10-investigacao-debugging.md"
   "docs/11-ferramentas-opcionais.md"
+  "docs/12-publicacao-segura.md"
 )
 
 for path in "${expected[@]}"; do

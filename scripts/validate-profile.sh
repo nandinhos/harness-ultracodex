@@ -4,6 +4,9 @@ set -euo pipefail
 required=(
   "AGENTS.md"
   "README.md"
+  "SECURITY.md"
+  "docs/README.md"
+  "docs/STATUS.md"
   "docs/00-visao.md"
   "docs/01-principios-operacionais.md"
   "docs/02-camadas-de-abstracao.md"
@@ -16,6 +19,7 @@ required=(
   "docs/09-manutencao-versionamento.md"
   "docs/10-investigacao-debugging.md"
   "docs/11-ferramentas-opcionais.md"
+  "docs/12-publicacao-segura.md"
   "profiles/ultracode-architect/AGENTS.md"
   "profiles/ultracode-architect/config.md"
   "profiles/ultracode-architect-clean/AGENTS.md"

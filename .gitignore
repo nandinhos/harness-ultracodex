@@ -1,3 +1,14 @@
 evals/reports/*.md
 !evals/reports/.gitkeep
 .runtime/
+.env
+.env.*
+!.env.example
+auth.json
+*.pem
+*.key
+*.p12
+*.pfx
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
