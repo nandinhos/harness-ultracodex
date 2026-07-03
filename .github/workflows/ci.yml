@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  validar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Instalar dependencias
+        run: sudo apt-get update && sudo apt-get install -y ripgrep shellcheck
+
+      - name: Verificar ferramentas
+        run: bash scripts/check-tooling.sh
+
+      - name: shellcheck
+        run: shellcheck hooks/*.sh scripts/*.sh
+
+      - name: Contrato do harness
+        run: bash scripts/test-harness-contract.sh
+
+      - name: Validar perfil
+        run: bash scripts/validate-profile.sh
+
+      - name: Lint de docs
+        run: bash scripts/lint-docs.sh
+
+      - name: Cenarios (lint estrutural)
+        run: bash scripts/run-scenarios.sh
+
+      - name: Guard de comando destrutivo
+        run: bash scripts/test-destructive-guard.sh
+
+      - name: Runtime core (build + verify)
+        run: bash scripts/build-clean-runtime.sh && bash scripts/verify-runtime.sh .runtime/codex-clean --expect-core
+
+      - name: Runtime pessoal (build + verify)
+        run: bash scripts/build-personal-runtime.sh && bash scripts/verify-runtime.sh .runtime/codex-nandodev --expect-extended
