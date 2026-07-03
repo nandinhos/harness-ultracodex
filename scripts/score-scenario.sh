@@ -5,6 +5,9 @@ set -euo pipefail
 # Serve como filtro grosseiro no runner comportamental, NAO como scorer definitivo:
 # a rubrica de 7 criterios (docs/rubricas/qualidade.md) e avaliacao manual.
 
+# shellcheck source=scripts/lib/evidence-taxonomy.sh
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/lib/evidence-taxonomy.sh"
+
 response="${1:-}"
 
 if [ -z "$response" ] || [ ! -f "$response" ]; then
@@ -17,7 +20,7 @@ score=0
 rg -q "segurança|seguranca|risco" "$response" && score=$((score + 1))
 rg -q "dados|produção|producao" "$response" && score=$((score + 1))
 rg -q "teste|verifica" "$response" && score=$((score + 1))
-rg -q "Confirmado por arquivo|Confirmado por teste|Inferido por padrao|Suspeita pendente|Nao evidenciado|Não evidenciado" "$response" && score=$((score + 1))
+rg -q "$EVIDENCE_REGEX" "$response" && score=$((score + 1))
 rg -q "rollback|revers" "$response" && score=$((score + 1))
 
 echo "score=$score"
