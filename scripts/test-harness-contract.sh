@@ -23,6 +23,9 @@ required_files=(
   "scripts/run-behavioral-scenarios.sh"
   "scripts/lib/build-runtime.sh"
   "scripts/lib/evidence-taxonomy.sh"
+  "scripts/judge.sh"
+  "hooks/codex-pretooluse-guard.sh"
+  "skills/judge/SKILL.md"
   "hooks/destructive-command-guard.sh"
   "evals/scenarios/005-pane-debugging.md"
   "evals/scenarios/006-docs-oficiais-context7.md"
@@ -47,7 +50,8 @@ for script in \
   scripts/delegate.sh \
   scripts/visual-check.sh \
   scripts/test-destructive-guard.sh \
-  scripts/run-behavioral-scenarios.sh
+  scripts/run-behavioral-scenarios.sh \
+  scripts/judge.sh
 do
   if [ ! -x "$script" ]; then
     echo "script nao executavel: $script"
