@@ -38,6 +38,11 @@ Decisao em aberto: confirmar no Codex CLI alvo exatamente o que `trusted` desabi
 Se suprimir a aprovacao de comandos, reavaliar o default ou manter o guard como
 substituto explicito. Nao ampliar `trust_level` sem substituto operacional verificado.
 
+O runtime contem um symlink `auth.json` para a credencial do Codex do host. A via
+git esta protegida (`.runtime/` e `auth.json` sao ignorados), mas NAO empacote o
+runtime seguindo symlinks (evite `tar -h`, `cp -rL`, `rsync -L`): isso derreferencia
+o symlink e vaza a credencial real.
+
 ## Reporte
 
 Se encontrar segredo versionado, remova o arquivo do Git, rotacione a credencial fora do repositório e registre a correcao em um ADR ou incidente se a decisao afetar o harness.

@@ -38,6 +38,12 @@ Publicar o Harness LF sem vazar dados locais, credenciais, caches, sessoes ou re
    bash scripts/verify-runtime.sh .runtime/codex-nandodev --expect-extended
    ```
 
+## Empacotamento fora do Git
+
+O `.runtime/` contem um symlink `auth.json` para a credencial do host. Ao gerar um
+tarball ou copia fora do fluxo git, NAO siga symlinks (evite `tar -h`, `cp -rL`,
+`rsync -L`) para nao derreferenciar e vazar a credencial real.
+
 ## Bloqueadores
 
 Nao publicar se houver:
