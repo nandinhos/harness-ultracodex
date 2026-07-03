@@ -20,9 +20,18 @@ build_runtime() {
   # effort e MCP) e anexa o bloco de confianca do projeto. Assim, qualquer
   # [mcp_servers.*] do perfil (ex.: context7) fica na config base, visivel a
   # sessoes e a `codex mcp list`/`codex doctor`.
+  # Matcher do shell tool para o hook PreToolUse. Default "^Bash$" (a suite do
+  # proprio Codex usa "Bash"); sobrescrevivel para verificacao/descoberta.
+  local hook_matcher="${HARNESS_HOOK_MATCHER-^Bash$}"
+
   {
     cat "$profile_dir/config.toml"
     printf '\n[projects."%s"]\ntrust_level = "trusted"\n' "$project_root"
+    # Hook nativo PreToolUse: aplica o guard de comando destrutivo como enforcement
+    # real (ADR 0004). O command aponta para a copia do adaptador no runtime.
+    printf '\n[[hooks.PreToolUse]]\n'
+    [ -n "$hook_matcher" ] && printf 'matcher = "%s"\n' "$hook_matcher"
+    printf '\n[[hooks.PreToolUse.hooks]]\ntype = "command"\ncommand = "bash %s/hooks/codex-pretooluse-guard.sh"\ntimeout = 10\nstatusMessage = "guardrail LF"\n' "$runtime"
   } > "$runtime/config.toml"
 
   local skill name hook

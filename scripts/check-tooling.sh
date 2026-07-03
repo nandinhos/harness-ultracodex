@@ -19,6 +19,8 @@ check_tool() {
 # rg (ripgrep) e dependencia dura de quase todos os validadores; sem ele, eles
 # falham com exit 127. Por isso e requerido.
 check_tool rg 1
+# jq e requerido pelo adaptador do hook nativo (parse do stdin JSON) e pelo judge.
+check_tool jq 1
 check_tool codex "${HARNESS_ENABLE_DELEGATION:-0}"
 check_tool hermes 0
 check_tool agy 0
