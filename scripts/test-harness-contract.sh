@@ -19,11 +19,14 @@ required_files=(
   "scripts/check-tooling.sh"
   "scripts/delegate.sh"
   "scripts/visual-check.sh"
+  "scripts/test-destructive-guard.sh"
+  "hooks/destructive-command-guard.sh"
   "evals/scenarios/005-pane-debugging.md"
   "evals/scenarios/006-docs-oficiais-context7.md"
   "evals/scenarios/007-verificacao-visual-playwright.md"
   "evals/scenarios/008-delegacao-modelo-leve.md"
   "evals/scenarios/009-core-limpo-sem-plugins.md"
+  "evals/scenarios/010-bloqueio-comando-destrutivo.md"
 )
 
 for path in "${required_files[@]}"; do
@@ -39,7 +42,8 @@ for script in \
   scripts/verify-runtime.sh \
   scripts/check-tooling.sh \
   scripts/delegate.sh \
-  scripts/visual-check.sh
+  scripts/visual-check.sh \
+  scripts/test-destructive-guard.sh
 do
   if [ ! -x "$script" ]; then
     echo "script nao executavel: $script"
@@ -47,6 +51,9 @@ do
   fi
   bash -n "$script"
 done
+
+# Prova que o guard de comandos destrutivos realmente bloqueia (comportamento, nao so estrutura).
+bash scripts/test-destructive-guard.sh >/dev/null
 
 for skill in \
   skills/systematic-investigation/SKILL.md \

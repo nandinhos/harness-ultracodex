@@ -39,6 +39,20 @@ for skill in "${expected_skills[@]}"; do
   fi
 done
 
+expected_hooks=(
+  "destructive-command-guard.sh"
+  "pre-action-risk-check.sh"
+  "pre-edit-scope-check.sh"
+  "pre-finish-evidence-check.sh"
+)
+
+for hook in "${expected_hooks[@]}"; do
+  if [ ! -f "$runtime/hooks/$hook" ]; then
+    echo "hook ausente no runtime: $hook"
+    exit 1
+  fi
+done
+
 case "$mode" in
   --expect-core)
     if rg -q '^\[mcp_servers\.' "$runtime"/*.toml; then

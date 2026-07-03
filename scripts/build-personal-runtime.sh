@@ -26,6 +26,14 @@ for skill in "$project_root"/skills/*; do
   cp "$skill/SKILL.md" "$runtime/skills/$name/SKILL.md"
 done
 
+# Copia os hooks para o runtime para que sejam invocaveis pelo agente (ver AGENTS.md).
+mkdir -p "$runtime/hooks"
+for hook in "$project_root"/hooks/*.sh; do
+  [ -f "$hook" ] || continue
+  cp "$hook" "$runtime/hooks/$(basename "$hook")"
+  chmod +x "$runtime/hooks/$(basename "$hook")"
+done
+
 if [ -f "$HOME/.codex/auth.json" ] && [ ! -e "$runtime/auth.json" ]; then
   ln -s "$HOME/.codex/auth.json" "$runtime/auth.json"
 fi

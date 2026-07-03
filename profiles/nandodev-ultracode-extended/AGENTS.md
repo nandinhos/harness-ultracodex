@@ -16,6 +16,12 @@ Executar o Harness LF com capacidades opcionais controladas para investigacao pr
 - Use delegacao por `codex`, `hermes` ou `agy` apenas com escopo fechado e criterios de pronto.
 - Prefira modelo leve para tarefas simples quando a delegacao nao exigir raciocinio profundo.
 
+## Guarda de comandos destrutivos
+
+- Antes de executar qualquer comando irreversivel ou destrutivo (remocao recursiva, `git reset --hard`, `git clean -f`, `git push --force`, `dd`, `mkfs`, `drop`/`delete from`/`truncate`, `chmod`/`chown` recursivo), rode `hooks/destructive-command-guard.sh '<comando>'`.
+- Se a saida for `bloqueado=sim`, pare: exija confirmacao explicita do usuario e um plano de rollback antes de prosseguir.
+- Trate o guard como piso, nao teto: comandos perigosos fora da lista tambem exigem confirmacao.
+
 ## Limites
 
 - Nao herdar plugins globais.

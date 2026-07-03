@@ -26,6 +26,18 @@ Resultados esperados:
 - apenas `.runtime/` e relatorios temporarios em ignorados;
 - validadores passando.
 
+## Nivel de confianca do runtime
+
+Os build scripts gravam `trust_level = "trusted"` para o projeto no `config.toml`
+gerado. Isso reduz prompts de aprovacao nativos do Codex para o projeto. Como o
+harness nao aplica enforcement de kernel, o substituto operacional e a instrucao
+nos `AGENTS.md` de rodar `hooks/destructive-command-guard.sh` antes de comandos
+destrutivos (ver `docs/adr/0003-hooks-operacionais.md`).
+
+Decisao em aberto: confirmar no Codex CLI alvo exatamente o que `trusted` desabilita.
+Se suprimir a aprovacao de comandos, reavaliar o default ou manter o guard como
+substituto explicito. Nao ampliar `trust_level` sem substituto operacional verificado.
+
 ## Reporte
 
 Se encontrar segredo versionado, remova o arquivo do Git, rotacione a credencial fora do repositório e registre a correcao em um ADR ou incidente se a decisao afetar o harness.
