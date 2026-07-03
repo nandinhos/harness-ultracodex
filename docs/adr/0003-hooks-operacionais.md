@@ -43,3 +43,10 @@ Adotar a terceira opcao:
 
 - Se o Codex CLI expuser um hook pre-exec nativo, migrar a amarracao para ele (enforcement real) e reduzir a dependencia da instrucao textual.
 - Se auditoria mostrar o agente ignorando a instrucao do guard, reavaliar `trust_level = "trusted"` ou adotar enforcement externo.
+
+> Atualizacao (2026-07-03): o primeiro gatilho DISPAROU. O Codex 0.142.5 expoe hooks
+> nativos (`[[hooks.PreToolUse]]` no `config.toml`, entrada via stdin JSON, decisao
+> `deny` no stdout; hooks tem trust por hash de conteudo, e `trust_level = "trusted"`
+> habilita o carregamento de hooks project-local). A migracao do guard para
+> enforcement nativo real esta proposta em ADR 0004 (pendente de decisao e de prova
+> ponta-a-ponta com um comando destrutivo negado ao vivo).

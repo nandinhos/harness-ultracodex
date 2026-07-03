@@ -85,3 +85,23 @@ Aberto (mantenedor, nao-bloqueante): confirmar num teste de sessao real (`codex 
 - [x] `scripts/lib/build-runtime.sh` extraido; `build-clean`/`build-personal` viram wrappers de ~6 linhas.
 - [x] Regex da taxonomia de evidencia centralizada em `scripts/lib/evidence-taxonomy.sh` (consumida por `score-scenario.sh` e `pre-finish-evidence-check.sh`, com fallback para a copia do hook no runtime).
 - [x] Dupla checagem de `npx` removida (na Fase 4) e parametro `scope` morto eliminado de `pre-edit-scope-check.sh`.
+
+---
+
+## Pendencias pos-fase (investigadas com o `codex` real, v0.142.5)
+
+- [x] **Model IDs sao reais.** `codex debug models` lista `gpt-5.5`, `gpt-5.4` e `gpt-5.4-mini` — os IDs hardcoded resolvem. Caveat de "verificar model IDs" fechado.
+- [x] **`actions/checkout` bumpado para `@v6`** (Node 24; existem v4..v7, v7 e a mais recente).
+- [x] **`trust_level = "trusted"` documentado (mecanismo mal-diagnosticado pelo review #2).** Fonte do Codex: `trusted` HABILITA carregamento de config/hooks/exec-policies project-local (nao e afrouxamento). Separado: `approval_policy`/`sandbox_mode` nao sao definidos pelo harness -> rodam nos defaults do Codex (item de hardening registrado em `SECURITY.md`).
+- [x] **context7 em sessao (`-p`):** ja resolvido pela correcao de config base da Fase 3 (`codex mcp list`/`doctor` provam o carregamento). Um teste de sessao `-p` ao vivo so re-confirmaria — baixo valor marginal.
+- [x] **Runner comportamental ponta-a-ponta provado:** `delegate.sh` -> `codex exec` (gpt-5.4-mini) -> resposta real -> `score-scenario` = 4 (exit 0). A cadeia que o runner compoe esta verificada.
+
+## Oportunidade nova — ADR 0004 (proposta): enforcement nativo do guard
+
+O gatilho de extracao do ADR 0003 disparou: o Codex 0.142.5 tem hooks nativos
+(`[[hooks.PreToolUse]]`, entrada stdin JSON, decisao `deny` no stdout; trust por hash).
+Isso permite migrar o `destructive-command-guard` de advisory (instrucao no `AGENTS.md`)
+para **enforcement real**. Requer: adaptador stdin->guard->JSON, wiring no `config.toml`
+gerado, confirmar o `matcher` do shell tool e a semantica de hook-trust em automacao, e
+**prova ao vivo de um comando negado**. Fica como proposta de ADR 0004 (custo de token
+e mudanca arquitetural) pendente de decisao do mantenedor.

@@ -29,14 +29,26 @@ Resultados esperados:
 ## Nivel de confianca do runtime
 
 Os build scripts gravam `trust_level = "trusted"` para o projeto no `config.toml`
-gerado. Isso reduz prompts de aprovacao nativos do Codex para o projeto. Como o
-harness nao aplica enforcement de kernel, o substituto operacional e a instrucao
-nos `AGENTS.md` de rodar `hooks/destructive-command-guard.sh` antes de comandos
-destrutivos (ver `docs/adr/0003-hooks-operacionais.md`).
+gerado.
 
-Decisao em aberto: confirmar no Codex CLI alvo exatamente o que `trusted` desabilita.
-Se suprimir a aprovacao de comandos, reavaliar o default ou manter o guard como
-substituto explicito. Nao ampliar `trust_level` sem substituto operacional verificado.
+Confirmado na fonte do Codex 0.142.5 (`config/src/loader`): `trusted` HABILITA o
+carregamento de config project-local, **hooks** e exec policies do projeto. Um
+projeto nao-confiavel tem esses recursos filtrados. Portanto `trusted` e
+pre-requisito para qualquer guardrail nativo baseado em hook — nao um afrouxamento
+de seguranca, como o review inicial supos.
+
+Separado e nao definido pelo harness: `trust_level` nao configura por si
+`approval_policy` nem `sandbox_mode` (sao chaves independentes). O harness nao define
+nenhuma das duas, entao valem os defaults do Codex. Observado empiricamente
+(`codex exec` neste runtime): `approval: never` e `sandbox: workspace-write` limitado
+a `[workdir, /tmp, $TMPDIR]`. Ou seja, o modo exec nao pede aprovacao, mas confina a
+escrita ao workspace + tmp (nao ao disco inteiro); o modo interativo pode diferir.
+Para uma postura explicita, defina `approval_policy` e `sandbox_mode` no `config.toml`
+do perfil (item de hardening).
+
+Enquanto nao houver hook nativo amarrado (ver `docs/adr/0003-hooks-operacionais.md`
+e a proposta de ADR 0004), o guard de comando destrutivo e aplicado apenas por
+instrucao no `AGENTS.md` — cumprimento voluntario do agente, nao enforcement do Codex.
 
 O runtime contem um symlink `auth.json` para a credencial do Codex do host. A via
 git esta protegida (`.runtime/` e `auth.json` sao ignorados), mas NAO empacote o
