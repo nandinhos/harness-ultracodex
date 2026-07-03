@@ -46,12 +46,12 @@ Evidencia: `bash scripts/test-destructive-guard.sh` e `bash scripts/test-harness
 
 ---
 
-## Fase 2 — Honestar a camada avaliativa
+## Fase 2 — Honestar a camada avaliativa — CONCLUIDA
 
-- [ ] Reetiquetar `run-scenarios.sh` como lint de estrutura de cenarios; remover "mede o comportamento" de `docs/08` e `README`.
-- [ ] Wire um runner real que injete o "Pedido do usuario" de cada cenario num agente via `delegate.sh`/`codex` e capture a resposta.
-- [ ] Reescrever `score-scenario.sh` para consumir a "Evidencia minima" especifica de cada cenario e implementar a rubrica de 7 criterios, ou remove-lo e marcar a rubrica como manual.
-- [ ] Alinhar `docs/cenarios/modelo.md` x cenarios x linter (headings "Nome"/"Rubrica").
+- [x] `run-scenarios.sh` reetiquetado como lint estrutural; "mede o comportamento" removido de `docs/08` e `README`.
+- [x] Runner comportamental opt-in `scripts/run-behavioral-scenarios.sh` (injeta o "Pedido do usuario" via `delegate.sh`, pontua a resposta; gated por `HARNESS_ENABLE_BEHAVIORAL=1`, fora da suite padrao).
+- [x] `score-scenario.sh` documentado como heuristica de primeira passada; rubrica de 7 criterios marcada como avaliacao manual.
+- [x] `docs/cenarios/modelo.md` alinhado ao linter (H1 = nome; 4 secoes exigidas; `Nome`/`Rubrica` removidas).
 
 ## Fase 3 — Corretude e observabilidade do build de runtime — CONCLUIDA
 
