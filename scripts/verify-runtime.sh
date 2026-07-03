@@ -53,16 +53,34 @@ for hook in "${expected_hooks[@]}"; do
   fi
 done
 
+runtime_abs="$(cd "$runtime" && pwd)"
+
+# Checagem comportamental: pergunta ao proprio codex quais MCP servers ele enxerga
+# nesse runtime. Retorna 2 se codex nao estiver disponivel (cai no fallback estrutural).
+mcp_lists_context7() {
+  command -v codex >/dev/null 2>&1 || return 2
+  CODEX_HOME="$runtime_abs" codex mcp list 2>/dev/null | rg -q '(^|[[:space:]])context7([[:space:]]|$)'
+}
+
 case "$mode" in
   --expect-core)
-    if rg -q '^\[mcp_servers\.' "$runtime"/*.toml; then
+    if mcp_lists_context7; then
+      echo "core limpo nao deveria expor context7"
+      exit 1
+    fi
+    if rg -q '^\[mcp_servers\.' "$runtime/config.toml"; then
       echo "mcp declarado no core limpo"
       exit 1
     fi
     ;;
   --expect-extended)
-    if ! rg -q '^\[mcp_servers\.context7\]' "$runtime"/*.toml; then
-      echo "context7 ausente no runtime pessoal"
+    if command -v codex >/dev/null 2>&1; then
+      if ! mcp_lists_context7; then
+        echo "context7 nao visivel via codex mcp list no runtime pessoal"
+        exit 1
+      fi
+    elif ! rg -q '^\[mcp_servers\.context7\]' "$runtime/config.toml"; then
+      echo "context7 ausente na config base do runtime pessoal"
       exit 1
     fi
     ;;

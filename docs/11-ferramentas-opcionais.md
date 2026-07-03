@@ -25,7 +25,8 @@ O harness possui um core limpo e ferramentas opcionais. O core nao depende dessa
 
 ## Regras
 
-- Ferramentas opcionais nao podem ser herdadas do ambiente global sem declaracao no runtime.
+- Ferramentas MCP (ex.: `context7`) sao declaradas no `config.toml` do runtime (na config base, visivel a `codex mcp list`/`codex doctor`), nao herdadas de config global.
+- Capacidades de CLI do host (`playwright`, `hermes`, `agy`, `codex`) sao detectadas via `command -v` pelos scripts; sua ausencia e reportada, nunca assumida silenciosamente.
 - Ausencia de ferramenta opcional deve ser reportada, nao ignorada.
 - Delegacao precisa ter escopo fechado, arquivos permitidos, criterio de pronto e formato de resposta.
 - Playwright e exigido para afirmar que uma mudanca visual foi verificada.

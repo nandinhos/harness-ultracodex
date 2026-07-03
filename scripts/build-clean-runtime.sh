@@ -10,14 +10,14 @@ mkdir -p "$runtime/skills"
 cp "$project_root/profiles/$profile_name/AGENTS.md" "$runtime/AGENTS.md"
 cp "$project_root/profiles/$profile_name/config.toml" "$runtime/$profile_name.config.toml"
 
-cat > "$runtime/config.toml" <<EOF
-model = "gpt-5.5"
-model_reasoning_effort = "high"
-service_tier = "default"
-
-[projects."$project_root"]
-trust_level = "trusted"
-EOF
+# Deriva o config.toml carregado do config.toml do perfil (fonte unica de model,
+# effort e MCP) e anexa o bloco de confianca do projeto. Assim, qualquer
+# [mcp_servers.*] do perfil (ex.: context7 no runtime pessoal) fica na config
+# base, visivel a sessoes e a `codex mcp list`/`codex doctor`.
+{
+  cat "$project_root/profiles/$profile_name/config.toml"
+  printf '\n[projects."%s"]\ntrust_level = "trusted"\n' "$project_root"
+} > "$runtime/config.toml"
 
 for skill in "$project_root"/skills/*; do
   [ -f "$skill/SKILL.md" ] || continue
