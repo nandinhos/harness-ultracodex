@@ -66,22 +66,22 @@ Acceptance (verificado): `CODEX_HOME=extended codex mcp list` mostra context7 e 
 
 Aberto (mantenedor, nao-bloqueante): confirmar num teste de sessao real (`codex -p nandodev-ultracode-extended`) que o layering tambem carrega context7. A config base ja garante isso independente da resposta.
 
-## Fase 4 — Robustez, portabilidade e CI
+## Fase 4 — Robustez, portabilidade e CI — CONCLUIDA
 
-- [ ] Adicionar `rg` (requerido) e `jq` a `check-tooling.sh`; degradar para `grep -E` onde viavel.
-- [ ] Portar `date -Iseconds` (forma portavel) e detectar `timeout`/`gtimeout` em `delegate.sh`.
-- [ ] Introduzir `shellcheck` sobre `hooks/*.sh` e `scripts/*.sh` e um workflow de CI/pre-commit minimo (contrato + validate-profile + shellcheck a cada push).
-- [ ] Derivar listas de skills/scripts esperados por glob/manifesto em vez de hardcodar.
+- [x] `rg` requerido em `check-tooling.sh` (dep dura de ~8 scripts); dupla checagem de `npx` removida.
+- [x] `date -Iseconds` portado e `timeout`/`gtimeout` detectados em `delegate.sh`.
+- [x] CI em `.github/workflows/ci.yml`: `shellcheck` + contrato + validate-profile + lint-docs + cenarios + guard + build/verify a cada push.
+- [x] `verify-runtime.sh` deriva skills/hooks esperados por glob do source (lista cresce sozinha).
 
-## Fase 5 — Defesa em profundidade e coerencia documental
+## Fase 5 — Defesa em profundidade e coerencia documental — CONCLUIDA
 
-- [ ] Expandir `.gitignore`: `id_rsa`, `id_ed25519`, `id_ecdsa`, `*.p8`, `*.jks`, `*.keystore`, `.npmrc`, `.netrc`, `.pypirc`, `.aws/`.
-- [ ] Evitar symlink de `auth.json` dentro da arvore (apontar runtime para fora do repo por default) ou documentar packaging sem seguir symlinks.
-- [ ] Adicionar `SECURITY.md`/`.gitignore` ao allowlist de `pre-edit-scope-check.sh` e tratar caminhos absolutos.
-- [ ] Reetiquetar `profiles/ultracode-architect` como documental/nao-executavel, ou torna-lo buildavel.
+- [x] `.gitignore` expandido (`id_rsa`, `id_ed25519`, `id_ecdsa`, `*.p8`, `*.jks`, `*.keystore`, `.npmrc`, `.netrc`, `.pypirc`, `.aws/`).
+- [x] Caveat de symlink de `auth.json` documentado em `SECURITY.md` e `docs/12` (via git ja protegida pelo `.gitignore`; opcao de apontar runtime para fora do repo fica registrada mas nao adotada por quebrar a auth do default in-tree).
+- [x] `pre-edit-scope-check.sh` com `SECURITY.md`/`.gitignore`/`.github` na allowlist e tratamento de caminho absoluto.
+- [x] `profiles/ultracode-architect` reetiquetado como documental/nao-buildavel em README e STATUS.
 
-## Fase 6 — Limpeza de debito tecnico (DRY, menor prioridade)
+## Fase 6 — Limpeza de debito tecnico (DRY) — CONCLUIDA
 
-- [ ] Extrair `scripts/lib/build-runtime.sh` parametrizado; `build-clean`/`build-personal` viram wrappers curtos.
-- [ ] Centralizar a regex da taxonomia de evidencia consumida por `score-scenario.sh` e `pre-finish-evidence-check.sh`.
-- [ ] Remover a dupla checagem de `npx` em `check-tooling.sh` e o parametro `scope` morto em `pre-edit-scope-check.sh`.
+- [x] `scripts/lib/build-runtime.sh` extraido; `build-clean`/`build-personal` viram wrappers de ~6 linhas.
+- [x] Regex da taxonomia de evidencia centralizada em `scripts/lib/evidence-taxonomy.sh` (consumida por `score-scenario.sh` e `pre-finish-evidence-check.sh`, com fallback para a copia do hook no runtime).
+- [x] Dupla checagem de `npx` removida (na Fase 4) e parametro `scope` morto eliminado de `pre-edit-scope-check.sh`.

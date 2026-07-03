@@ -6,7 +6,7 @@ Data: 2026-07-03
 
 O Harness LF possui:
 
-- perfil base `ultracode-architect`;
+- perfil base documental `ultracode-architect` (referencia, nao-buildavel);
 - perfil core limpo `ultracode-architect-clean`;
 - perfil pessoal `nandodev-ultracode-extended`;
 - 10 skills versionadas;
@@ -25,6 +25,7 @@ Ultima verificacao local conhecida:
 - `scripts/run-scenarios.sh`: passando.
 - `scripts/verify-runtime.sh` para core e pessoal: passando.
 - `scripts/test-destructive-guard.sh`: passando (38 bloqueios + 15 liberacoes).
+- CI (`.github/workflows/ci.yml`): roda a suite completa + `shellcheck` a cada push.
 
 Estas checagens sao estruturais e de comportamento de hook. A avaliacao do
 comportamento do agente contra cenarios e opt-in via

@@ -33,7 +33,7 @@ bash scripts/verify-runtime.sh .runtime/codex-clean --expect-core
 |---|---|
 | `AGENTS.md` | Instrucoes globais do projeto. |
 | `docs/` | Fonte de verdade ordenada do harness. |
-| `profiles/ultracode-architect/` | Perfil aplicavel a um agente Codex. |
+| `profiles/ultracode-architect/` | Perfil base documental (referencia); os aplicaveis sao `-clean` e `-extended`. |
 | `profiles/ultracode-architect-clean/` | Perfil core para runtime isolado sem plugins globais. |
 | `profiles/nandodev-ultracode-extended/` | Perfil pessoal com Context7, Playwright e delegacao opcional. |
 | `skills/` | Skills versionadas que implementam disciplinas especificas. |
