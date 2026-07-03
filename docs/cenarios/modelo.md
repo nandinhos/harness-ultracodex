@@ -1,12 +1,11 @@
 # Modelo de Cenario
 
-## Nome
-
-Nome curto do cenario.
+O titulo (H1, ex.: `# 010 - Bloqueio de comando destrutivo`) e o nome do cenario.
+As quatro secoes abaixo sao exigidas por `scripts/run-scenarios.sh`.
 
 ## Pedido do usuario
 
-Texto que sera entregue ao agente.
+Texto que sera entregue ao agente (usado tambem pelo runner comportamental).
 
 ## Riscos esperados
 
@@ -22,7 +21,4 @@ Texto que sera entregue ao agente.
 
 - Arquivo, teste, comando, premissa marcada ou confirmacao exigida.
 
-## Rubrica
-
-Use `docs/rubricas/qualidade.md`.
-
+A pontuacao usa `scripts/score-scenario.sh` (heuristica) e a rubrica manual em `docs/rubricas/qualidade.md`.

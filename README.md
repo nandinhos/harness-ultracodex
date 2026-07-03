@@ -39,7 +39,7 @@ bash scripts/verify-runtime.sh .runtime/codex-clean --expect-core
 | `skills/` | Skills versionadas que implementam disciplinas especificas. |
 | `hooks/` | Ganchos executaveis para checks antes/depois de acoes criticas. |
 | `scripts/` | Automacoes de validacao, scaffold e avaliacao. |
-| `evals/scenarios/` | Cenarios de pressao para medir o comportamento do perfil. |
+| `evals/scenarios/` | Cenarios de pressao. Lint estrutural por `run-scenarios.sh`; avaliacao comportamental opt-in por `run-behavioral-scenarios.sh`. |
 | `evals/reports/` | Saidas geradas por execucoes dos cenarios. |
 
 ## Garantias de seguranca

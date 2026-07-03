@@ -20,6 +20,7 @@ required_files=(
   "scripts/delegate.sh"
   "scripts/visual-check.sh"
   "scripts/test-destructive-guard.sh"
+  "scripts/run-behavioral-scenarios.sh"
   "hooks/destructive-command-guard.sh"
   "evals/scenarios/005-pane-debugging.md"
   "evals/scenarios/006-docs-oficiais-context7.md"
@@ -43,7 +44,8 @@ for script in \
   scripts/check-tooling.sh \
   scripts/delegate.sh \
   scripts/visual-check.sh \
-  scripts/test-destructive-guard.sh
+  scripts/test-destructive-guard.sh \
+  scripts/run-behavioral-scenarios.sh
 do
   if [ ! -x "$script" ]; then
     echo "script nao executavel: $script"

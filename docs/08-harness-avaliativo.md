@@ -1,6 +1,11 @@
 # 08 - Harness Avaliativo
 
-O harness avaliativo mede se o perfil realmente se comporta como agente arquiteto de longo horizonte.
+O harness avaliativo tem duas camadas:
+
+- **Estrutural** (`scripts/run-scenarios.sh`): confere que cada cenario declara as secoes exigidas. Roda na suite de saude padrao e NAO executa o agente.
+- **Comportamental** (`scripts/run-behavioral-scenarios.sh`, opt-in): injeta o "Pedido do usuario" de cada cenario num agente via `delegate.sh`, captura a resposta e a pontua com `score-scenario.sh` (heuristica) mais a rubrica manual. Exige modelo/credencial e gasta tokens; habilite com `HARNESS_ENABLE_BEHAVIORAL=1`.
+
+A camada estrutural garante que os cenarios existem e estao completos; so a comportamental mede conduta. Nao trate "estrutural passando" como prova de comportamento.
 
 ## Tipos de cenario
 

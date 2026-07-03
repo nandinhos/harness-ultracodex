@@ -1,11 +1,15 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Lint ESTRUTURAL de cenarios: confere que cada cenario declara as secoes exigidas.
+# NAO executa o agente e NAO mede comportamento. Para avaliacao de conduta use o
+# runner opt-in scripts/run-behavioral-scenarios.sh.
+
 mkdir -p evals/reports
 report="evals/reports/$(date +%Y%m%d-%H%M%S)-estrutura.md"
 
 {
-  echo "# Relatorio de Cenarios"
+  echo "# Relatorio Estrutural de Cenarios"
   echo
   echo "Data: $(date -Iseconds)"
   echo

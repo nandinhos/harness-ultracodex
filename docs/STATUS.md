@@ -27,8 +27,9 @@ Ultima verificacao local conhecida:
 - `scripts/test-destructive-guard.sh`: passando (38 bloqueios + 15 liberacoes).
 
 Estas checagens sao estruturais e de comportamento de hook. A avaliacao do
-comportamento do agente contra cenarios ainda nao e executada (planejada no
-roadmap; ver `deep-analysis/2026-07-03-code-review-roadmap.md`).
+comportamento do agente contra cenarios e opt-in via
+`scripts/run-behavioral-scenarios.sh` (exige modelo/credencial;
+`HARNESS_ENABLE_BEHAVIORAL=1`) e nao entra na suite de saude padrao.
 
 ## Publicacao
 

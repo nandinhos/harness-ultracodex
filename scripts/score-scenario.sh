@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Pontuacao HEURISTICA de primeira passada de uma resposta do agente (0 a 5).
+# Serve como filtro grosseiro no runner comportamental, NAO como scorer definitivo:
+# a rubrica de 7 criterios (docs/rubricas/qualidade.md) e avaliacao manual.
+
 response="${1:-}"
 
 if [ -z "$response" ] || [ ! -f "$response" ]; then
