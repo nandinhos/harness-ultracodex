@@ -11,6 +11,8 @@ O objetivo e criar uma camada operacional que aumente a qualidade de desenvolvim
 | `AGENTS.md` | Instrucoes globais do projeto. |
 | `docs/` | Fonte de verdade ordenada do harness. |
 | `profiles/ultracode-architect/` | Perfil aplicavel a um agente Codex. |
+| `profiles/ultracode-architect-clean/` | Perfil core para runtime isolado sem plugins globais. |
+| `profiles/nandodev-ultracode-extended/` | Perfil pessoal com Context7, Playwright e delegacao opcional. |
 | `skills/` | Skills versionadas que implementam disciplinas especificas. |
 | `hooks/` | Ganchos executaveis para checks antes/depois de acoes criticas. |
 | `scripts/` | Automacoes de validacao, scaffold e avaliacao. |
@@ -29,6 +31,8 @@ O objetivo e criar uma camada operacional que aumente a qualidade de desenvolvim
 
 ```bash
 bash scripts/validate-profile.sh
+bash scripts/test-harness-contract.sh
 bash scripts/run-scenarios.sh
+bash scripts/build-clean-runtime.sh
+bash scripts/build-personal-runtime.sh
 ```
-

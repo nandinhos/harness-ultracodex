@@ -14,8 +14,14 @@ required=(
   "docs/07-skills.md"
   "docs/08-harness-avaliativo.md"
   "docs/09-manutencao-versionamento.md"
+  "docs/10-investigacao-debugging.md"
+  "docs/11-ferramentas-opcionais.md"
   "profiles/ultracode-architect/AGENTS.md"
   "profiles/ultracode-architect/config.md"
+  "profiles/ultracode-architect-clean/AGENTS.md"
+  "profiles/ultracode-architect-clean/config.toml"
+  "profiles/nandodev-ultracode-extended/AGENTS.md"
+  "profiles/nandodev-ultracode-extended/config.toml"
 )
 
 for path in "${required[@]}"; do
@@ -47,4 +53,3 @@ for hook in hooks/*.sh scripts/*.sh; do
 done
 
 echo "validacao=ok"
-

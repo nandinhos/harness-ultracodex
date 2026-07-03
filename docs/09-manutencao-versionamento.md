@@ -9,10 +9,10 @@
 | Novo hook | Documento em `docs/06-hooks-e-automacoes.md` e teste manual/script. |
 | Nova regra de risco | Atualizacao da matriz e cenario que falha sem a regra. |
 | Mudanca de prioridade | ADR obrigatorio. |
+| Nova ferramenta opcional | Documento em `docs/11-ferramentas-opcionais.md`, script de deteccao e cenario avaliativo. |
 
 ## Versionamento
 
 - Use commits pequenos e coesos.
 - Mensagens de commit devem ser em portugues do Brasil.
 - ADRs documentam decisoes que mudam comportamento do harness.
-

@@ -12,6 +12,8 @@ expected=(
   "docs/07-skills.md"
   "docs/08-harness-avaliativo.md"
   "docs/09-manutencao-versionamento.md"
+  "docs/10-investigacao-debugging.md"
+  "docs/11-ferramentas-opcionais.md"
 )
 
 for path in "${expected[@]}"; do
@@ -27,4 +29,3 @@ if rg -n "TBD|TODO|A definir" docs profiles skills; then
 fi
 
 echo "docs=ok"
-

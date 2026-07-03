@@ -1,0 +1,7 @@
+model = "gpt-5.5"
+model_reasoning_effort = "high"
+service_tier = "default"
+
+[mcp_servers.context7]
+command = "npx"
+args = ["-y", "@upstash/context7-mcp"]

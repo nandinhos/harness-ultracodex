@@ -1,2 +1,3 @@
 evals/reports/*.md
 !evals/reports/.gitkeep
+.runtime/
