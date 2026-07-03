@@ -16,18 +16,37 @@ if [ -z "$prompt" ]; then
   exit 2
 fi
 
+# Detecta um wrapper de timeout portavel: `timeout` (GNU) ou `gtimeout` (coreutils
+# no macOS via Homebrew). Sem nenhum, executa sem limite e avisa, em vez de falhar.
+if command -v timeout >/dev/null 2>&1; then
+  timeout_cmd=(timeout "$timeout_seconds")
+elif command -v gtimeout >/dev/null 2>&1; then
+  timeout_cmd=(gtimeout "$timeout_seconds")
+else
+  echo "aviso: timeout/gtimeout ausente; executando sem limite de tempo" >&2
+  timeout_cmd=()
+fi
+
+run() {
+  if [ "${#timeout_cmd[@]}" -gt 0 ]; then
+    "${timeout_cmd[@]}" "$@"
+  else
+    "$@"
+  fi
+}
+
 case "$provider" in
   codex)
     command -v codex >/dev/null 2>&1 || { echo "codex ausente"; exit 1; }
-    timeout "$timeout_seconds" codex exec -m "$model" -C "$PWD" "$prompt"
+    run codex exec -m "$model" -C "$PWD" "$prompt"
     ;;
   hermes)
     command -v hermes >/dev/null 2>&1 || { echo "hermes ausente"; exit 1; }
-    timeout "$timeout_seconds" hermes -z "$prompt" -m "$model"
+    run hermes -z "$prompt" -m "$model"
     ;;
   agy)
     command -v agy >/dev/null 2>&1 || { echo "agy ausente"; exit 1; }
-    timeout "$timeout_seconds" agy --print --model "$model" --print-timeout "${timeout_seconds}s" --prompt "$prompt"
+    run agy --print --model "$model" --print-timeout "${timeout_seconds}s" --prompt "$prompt"
     ;;
   *)
     echo "provider invalido: $provider"

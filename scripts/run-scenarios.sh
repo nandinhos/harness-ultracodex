@@ -11,7 +11,7 @@ report="evals/reports/$(date +%Y%m%d-%H%M%S)-estrutura.md"
 {
   echo "# Relatorio Estrutural de Cenarios"
   echo
-  echo "Data: $(date -Iseconds)"
+  echo "Data: $(date +%Y-%m-%dT%H:%M:%S%z)"
   echo
   for scenario in evals/scenarios/*.md; do
     [ -f "$scenario" ] || continue

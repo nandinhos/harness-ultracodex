@@ -19,36 +19,24 @@ if rg -q '^\[plugins\.' "$runtime"/*.toml; then
   exit 1
 fi
 
-expected_skills=(
-  "intent-router"
-  "risk-gates"
-  "evidence-discipline"
-  "legacy-refactor"
-  "adversarial-review"
-  "delivery-format"
-  "systematic-investigation"
-  "official-docs-check"
-  "visual-verification"
-  "agent-orchestration"
-)
+project_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
-for skill in "${expected_skills[@]}"; do
-  if [ ! -f "$runtime/skills/$skill/SKILL.md" ]; then
-    echo "skill ausente no runtime: $skill"
+# Deriva skills/hooks esperados por glob do source do projeto, para a lista crescer
+# sozinha quando um novo item for adicionado (evita divergencia de lista fixa).
+for skill_md in "$project_root"/skills/*/SKILL.md; do
+  [ -f "$skill_md" ] || continue
+  name="$(basename "$(dirname "$skill_md")")"
+  if [ ! -f "$runtime/skills/$name/SKILL.md" ]; then
+    echo "skill ausente no runtime: $name"
     exit 1
   fi
 done
 
-expected_hooks=(
-  "destructive-command-guard.sh"
-  "pre-action-risk-check.sh"
-  "pre-edit-scope-check.sh"
-  "pre-finish-evidence-check.sh"
-)
-
-for hook in "${expected_hooks[@]}"; do
-  if [ ! -f "$runtime/hooks/$hook" ]; then
-    echo "hook ausente no runtime: $hook"
+for hook_src in "$project_root"/hooks/*.sh; do
+  [ -f "$hook_src" ] || continue
+  name="$(basename "$hook_src")"
+  if [ ! -f "$runtime/hooks/$name" ]; then
+    echo "hook ausente no runtime: $name"
     exit 1
   fi
 done
