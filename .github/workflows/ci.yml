@@ -34,6 +34,14 @@ jobs:
       - name: Guard de comando destrutivo
         run: bash scripts/test-destructive-guard.sh
 
+      - name: Enforcement nativo (smoke, opt-in)
+        # Pula sem codex autenticado (caso do runner padrao). Para DETECCAO REAL do
+        # enforcement nativo, provisione codex + auth neste runner (ver docs/12);
+        # o teste entao roda sessoes reais e falha se o hook nao bloquear.
+        env:
+          HARNESS_ENABLE_NATIVE_HOOK_TEST: "1"
+        run: bash scripts/test-native-hook-enforcement.sh
+
       - name: Runtime core (build + verify)
         run: bash scripts/build-clean-runtime.sh && bash scripts/verify-runtime.sh .runtime/codex-clean --expect-core
 

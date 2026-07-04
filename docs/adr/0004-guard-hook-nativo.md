@@ -49,7 +49,15 @@ proprio por hash sha256. Num runtime fresco o hook chega untrusted e e PULADO
 - Duas camadas: advisory (sempre) + hook nativo (quando confiado).
 - `verify-runtime.sh` confirma o hook presente/wired; nao confirma o trust (estado de runtime) — documentado.
 
+## Deteccao de drift
+
+`scripts/test-native-hook-enforcement.sh` (opt-in, exige codex autenticado) roda
+sessoes `codex exec` reais e verifica, com tripla assercao: o hook DISPARA em
+chamadas Bash (matcher), o Codex HONRA o `deny` (destrutivo bloqueado) e um comando
+benigno NAO e bloqueado. Provado verde. Rode-o apos upgrades do Codex — se o matcher
+ou o schema de deny mudarem, o teste falha em vez de o enforcement quebrar em silencio.
+
 ## Gatilho para revisitar
 
 - Se o Codex expuser um caminho scriptavel/persistente de trust de hook, provisiona-lo no build para enforcement automatico em CI.
-- Se o nome do shell tool ou o schema de deny mudarem numa versao futura do Codex, reconfirmar o matcher e o JSON.
+- Se `test-native-hook-enforcement.sh` falhar apos um upgrade do Codex, reconfirmar o matcher (`^Bash$`) e o schema de deny.

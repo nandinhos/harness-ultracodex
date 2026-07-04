@@ -29,6 +29,9 @@ confirma o hook wired, nao o trust (estado de runtime).
 O guard tambem cobre a politica de banco (reset bloqueado; banco de teste
 obrigatorio; original so com dupla confirmacao) — ver `adr/0005-politica-de-banco.md`.
 
+O enforcement nativo tem deteccao de drift: `scripts/test-native-hook-enforcement.sh`
+(opt-in, exige codex) roda sessoes reais e falha se o hook deixar de bloquear.
+
 O guard normaliza whitespace e detecta destrutividade por familia (rm recursivo,
 `git reset --hard`, `git clean -f`, `git push --force`/`-f`, `dd`, `mkfs`,
 `find -delete`, `chmod`/`chown` recursivo, `drop`/`delete from`/`truncate`),

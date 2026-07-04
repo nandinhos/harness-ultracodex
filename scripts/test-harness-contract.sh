@@ -24,6 +24,7 @@ required_files=(
   "scripts/lib/build-runtime.sh"
   "scripts/lib/evidence-taxonomy.sh"
   "scripts/judge.sh"
+  "scripts/test-native-hook-enforcement.sh"
   "hooks/codex-pretooluse-guard.sh"
   "skills/judge/SKILL.md"
   "hooks/destructive-command-guard.sh"
@@ -51,7 +52,8 @@ for script in \
   scripts/visual-check.sh \
   scripts/test-destructive-guard.sh \
   scripts/run-behavioral-scenarios.sh \
-  scripts/judge.sh
+  scripts/judge.sh \
+  scripts/test-native-hook-enforcement.sh
 do
   if [ ! -x "$script" ]; then
     echo "script nao executavel: $script"

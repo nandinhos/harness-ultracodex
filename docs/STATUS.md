@@ -28,6 +28,7 @@ Ultima verificacao local conhecida:
 - `scripts/verify-runtime.sh` para core e pessoal: passando.
 - `scripts/test-destructive-guard.sh`: passando (48 bloqueios + 15 liberacoes, incl. banco).
 - CI (`.github/workflows/ci.yml`): roda a suite completa + `shellcheck` a cada push.
+- `scripts/test-native-hook-enforcement.sh` (opt-in, exige codex): prova o enforcement nativo em sessao real (matcher + deny + no-over-block) — verde na ultima execucao local.
 
 Estas checagens sao estruturais e de comportamento de hook. A avaliacao do
 comportamento do agente contra cenarios e opt-in via

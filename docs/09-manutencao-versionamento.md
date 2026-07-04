@@ -10,6 +10,7 @@
 | Nova regra de risco | Atualizacao da matriz e cenario que falha sem a regra. |
 | Mudanca de prioridade | ADR obrigatorio. |
 | Nova ferramenta opcional | Documento em `docs/11-ferramentas-opcionais.md`, script de deteccao e cenario avaliativo. |
+| Upgrade do Codex CLI | Rodar `scripts/test-native-hook-enforcement.sh` (opt-in) para confirmar que o enforcement nativo nao quebrou (matcher/schema de deny). |
 
 ## Versionamento
 
