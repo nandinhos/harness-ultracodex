@@ -25,15 +25,18 @@ teatro (keyword) nem custo em toda tarefa.
 
 `scripts/judge.sh`: monta um prompt com a rubrica de 7 criterios pedindo notas 0-3,
 media, veredito e CONTRAPARTE ADVERSARIAL, e delega via `delegate.sh` com
-`HARNESS_JUDGE_PROVIDER` (default `hermes`) e `HARNESS_JUDGE_MODEL` (default
-`MiniMax-M3`, ajustavel ao id exato do hermes). Acionado deliberadamente em tarefas
-de alto esforco (skill `judge`, integra com `adversarial-review`); nao roda no fluxo
-comum.
+`HARNESS_JUDGE_PROVIDER` (default `hermes`). Sem `HARNESS_JUDGE_MODEL`, usa o modelo
+default do hermes (ja e MiniMax-M3) — basta acionar o hermes. Acionado deliberadamente
+em tarefas de alto esforco (skill `judge`, integra com `adversarial-review`); nao roda
+no fluxo comum.
+
+Provado ao vivo: o judge produziu notas por criterio + veredito + contraparte
+adversarial profunda via MiniMax-M3, sem forcar `-m`.
 
 ## Consequencias
 
 - Escalada de qualidade real (juiz robusto + contraparte) sem custo por tarefa.
-- Modelo/provider parametrizados: o id do MiniMax deve casar com o hermes do usuario.
+- Usa o default do hermes (MiniMax-M3); `HARNESS_JUDGE_MODEL` sobrescreve so se preciso.
 - O valor depende do gate acionar so no que importa (por isso limitado a alto esforco).
 
 ## Gatilho para revisitar

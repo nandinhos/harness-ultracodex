@@ -20,7 +20,9 @@ O harness possui um core limpo e ferramentas opcionais. O core nao depende dessa
 | `HARNESS_ENABLE_PLAYWRIGHT` | `1` no perfil pessoal | Exigir disponibilidade de Playwright para verificacao visual. |
 | `HARNESS_ENABLE_DELEGATION` | `1` no perfil pessoal | Habilitar scripts de delegacao. |
 | `HARNESS_DELEGATE_PROVIDER` | `codex` | Escolher `codex`, `hermes` ou `agy`. |
-| `HARNESS_LIGHT_MODEL` | `gpt-5.4-mini` | Modelo para tarefas simples quando o provider aceitar override. |
+| `HARNESS_LIGHT_MODEL` | vazio (default do provider; codex usa `gpt-5.4-mini`) | Override de modelo na delegacao; vazio = default do provider. |
+| `HARNESS_JUDGE_PROVIDER` | `hermes` | Provider do juiz (`scripts/judge.sh`). |
+| `HARNESS_JUDGE_MODEL` | vazio (default do hermes: MiniMax-M3) | Override do modelo do juiz; vazio usa o default do hermes. |
 | `HARNESS_TIMEOUT` | `300` | Timeout em segundos para comandos delegados. |
 
 ## Regras

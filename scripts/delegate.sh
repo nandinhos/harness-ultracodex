@@ -2,7 +2,7 @@
 set -euo pipefail
 
 provider="${HARNESS_DELEGATE_PROVIDER:-codex}"
-model="${HARNESS_LIGHT_MODEL:-gpt-5.4-mini}"
+model="${HARNESS_LIGHT_MODEL:-}"   # vazio = usar o modelo default do provider
 timeout_seconds="${HARNESS_TIMEOUT:-300}"
 
 if [ "$#" -gt 0 ]; then
@@ -38,15 +38,24 @@ run() {
 case "$provider" in
   codex)
     command -v codex >/dev/null 2>&1 || { echo "codex ausente"; exit 1; }
-    run codex exec -m "$model" -C "$PWD" "$prompt"
+    run codex exec -m "${model:-gpt-5.4-mini}" -C "$PWD" "$prompt"
     ;;
   hermes)
     command -v hermes >/dev/null 2>&1 || { echo "hermes ausente"; exit 1; }
-    run hermes -z "$prompt" -m "$model"
+    # Sem -m, o hermes usa seu modelo default configurado (ex.: MiniMax-M3).
+    if [ -n "$model" ]; then
+      run hermes -z "$prompt" -m "$model"
+    else
+      run hermes -z "$prompt"
+    fi
     ;;
   agy)
     command -v agy >/dev/null 2>&1 || { echo "agy ausente"; exit 1; }
-    run agy --print --model "$model" --print-timeout "${timeout_seconds}s" --prompt "$prompt"
+    if [ -n "$model" ]; then
+      run agy --print --model "$model" --print-timeout "${timeout_seconds}s" --prompt "$prompt"
+    else
+      run agy --print --print-timeout "${timeout_seconds}s" --prompt "$prompt"
+    fi
     ;;
   *)
     echo "provider invalido: $provider"

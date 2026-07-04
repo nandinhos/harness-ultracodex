@@ -10,8 +10,8 @@ set -euo pipefail
 #
 #   scripts/judge.sh '<arquivo-do-artefato>' ['<contexto/pedido>']
 #
-# Config: HARNESS_JUDGE_PROVIDER (default hermes), HARNESS_JUDGE_MODEL (default
-# MiniMax-M3; ajuste para o id exato do seu hermes via `hermes model`).
+# Config: HARNESS_JUDGE_PROVIDER (default hermes). Sem HARNESS_JUDGE_MODEL, usa o
+# modelo default do hermes (ja e MiniMax-M3); defina-o so para sobrescrever.
 
 artefato="${1:-}"
 if [ -z "$artefato" ] || [ ! -f "$artefato" ]; then
@@ -40,5 +40,5 @@ ${contexto}
 $(cat "$artefato")"
 
 HARNESS_DELEGATE_PROVIDER="${HARNESS_JUDGE_PROVIDER:-hermes}" \
-HARNESS_LIGHT_MODEL="${HARNESS_JUDGE_MODEL:-MiniMax-M3}" \
+HARNESS_LIGHT_MODEL="${HARNESS_JUDGE_MODEL:-}" \
   bash "$project_root/scripts/delegate.sh" "$prompt"
